@@ -11,14 +11,22 @@ function Cart() {
     const viewItem = (id:any)=>{
         navigate(`/item/${id}`)
     }
-    const removeFromCart = (id:any)=>{
-        const cart = localStorage.getItem("cart")
-        if(cart){
-            const parsedCart = JSON.parse(cart)
-            if(parsedCart.includes(id)){parsedCart.splice(parsedCart.indexOf(id),1);}
-            localStorage.setItem("cart",JSON.stringify(parsedCart))
+    const removeFromCart = (id: any) => {
+        const cartData = localStorage.getItem("cart");
+        if (cartData) {
+            const parsedCart = JSON.parse(cartData);
+            const index = parsedCart.findIndex((item: any) => item.id === id);
+            if (index !== -1) {
+                if (parsedCart[index].quantity > 1) {
+                    parsedCart[index].quantity -= 1;
+                } else {
+                    parsedCart.splice(index, 1);
+                }
+                localStorage.setItem("cart", JSON.stringify(parsedCart));
+                setCart(parsedCart);
+            }
         }
-    }
+    };
     const addToCart = (id:any) =>{
         const cart = localStorage.getItem("cart")
         if(cart){

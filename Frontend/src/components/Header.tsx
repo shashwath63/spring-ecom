@@ -13,7 +13,7 @@ function Header() {
         <div className='flex flex-row-reverse justify-end gap-2'>
         <p className='border border-white p-1 rounded' onClick={()=>{openCart()}}>Cart</p>
         <p><input className='border border-white p-1 rounded' type="text" placeholder='Search'/></p>
-
+           <button className='border border-white p-1 rounded' onClick={()=>{navigate('/addProduct')}}> Add Product</button>
         </div>
     </div>
   )

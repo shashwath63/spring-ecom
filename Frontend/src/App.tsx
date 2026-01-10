@@ -7,6 +7,7 @@ import Home from './components/Home'
 import Cart from './components/Cart'
 import Header from './components/Header'
 import Item from './components/Item'
+import AddProduct from './components/AddProduct'
 function App() {
   return (
   <>
@@ -15,6 +16,7 @@ function App() {
     <Route path='/item/:id' element={<Item />} />
     <Route path='/cart' element={<Cart />} />
        <Route path='/' element={<Home />} />
+       <Route path='/addProduct' element={<AddProduct />} />
     </Routes>
    </>
   )

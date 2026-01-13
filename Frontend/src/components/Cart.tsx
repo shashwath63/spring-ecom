@@ -4,26 +4,27 @@ import { useNavigate } from 'react-router'
 function Cart() {
     const navigate = useNavigate()
     const [cart,setCart] = useState<any>([])
-    const [total,setTotal] = useState<number>(0)
-
-    const cartData= localStorage.getItem("cart")
+     const cartData= localStorage.getItem("cart")
     const cartItems = cartData ? JSON.parse(cartData) : []
+useEffect(()=>{
+    setCart(cartItems)
+},[cartData])
+
     const viewItem = (id:any)=>{
         navigate(`/item/${id}`)
     }
+
     const removeFromCart = (id: any) => {
-        const cartData = localStorage.getItem("cart");
         if (cartData) {
-            const parsedCart = JSON.parse(cartData);
-            const index = parsedCart.findIndex((item: any) => item.id === id);
+            const index = cartItems.findIndex((item: any) => item.id === id);
             if (index !== -1) {
-                if (parsedCart[index].quantity > 1) {
-                    parsedCart[index].quantity -= 1;
+                if (cartItems[index].quantity > 1) {
+                    cartItems[index].quantity -= 1;
                 } else {
-                    parsedCart.splice(index, 1);
+                    cartItems.splice(index, 1);
                 }
-                localStorage.setItem("cart", JSON.stringify(parsedCart));
-                setCart(parsedCart);
+                localStorage.setItem("cart", JSON.stringify(cartItems));
+                setCart(cartItems);
             }
         }
     };
@@ -44,9 +45,10 @@ function Cart() {
         }
         setCart(cartItems)
     }
-    useEffect(()=>{
-        setCart(cartItems)
-    },[])
+    const buyItem = (id:any)=>{
+        navigate(`/buy/${id}`)
+    }
+
   return (
     <div>
         {cart.map((item:any)=>{
@@ -63,6 +65,8 @@ function Cart() {
                     <p>{item.quantity}</p>
                     <button onClick={()=>{removeFromCart(item.id)}} className='p-1 rounded border border-black w-1/4'>-</button>
                     </div>
+                    <button className='rounded border border-black p-1' onClick={()=>{buyItem(item?.id)}}>
+                        Buy</button>
                 </div>
             )
         })}

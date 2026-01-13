@@ -1,9 +1,11 @@
 import React,{useState,useEffect} from 'react'
 import Header  from './Header'
+import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router'
 function Home() {
     const navigate = useNavigate()
     const [products, setProducts] = useState<any>([])
+    const [cartLength, setCartLength] = useState<any>({})
     useEffect(()=>{
         const fetchProducts = async()=>{
             const response = await fetch("http://localhost:8080/api/products")
@@ -12,12 +14,12 @@ function Home() {
         }
         fetchProducts()
     },[])
+    const cart = localStorage.getItem("cart")
+    const parsedCart = JSON.parse(cart || "[]")
     const addToCart = (item:any)=>{
-        const cart = localStorage.getItem("cart")
-        if(cart){
-            const parsedCart = JSON.parse(cart)
-            const existingItemIndex = parsedCart.findIndex((cartItem:any) => cartItem.id === item.id)
-
+        const existingItemIndex = parsedCart.findIndex((cartItem:any) => cartItem.id === item?.id)
+        setCartLength({...cartLength,[item.id]:parsedCart?.length})
+        if(parsedCart){
             if(existingItemIndex !== -1){
                 parsedCart[existingItemIndex].quantity = (parsedCart[existingItemIndex].quantity || 0) + 1;
             } else {
@@ -28,8 +30,7 @@ function Home() {
         else{
             localStorage.setItem("cart",JSON.stringify([{...item, quantity: 1}]))
         }
-        console.log(localStorage.getItem("cart"));
-
+        toast.success("Item added to cart")
     }
     const viewItem = (id:any)=>{
         navigate(`/item/${id}`)
@@ -45,10 +46,21 @@ function Home() {
                 <p className='text-sm flex flex-wrap'>{item?.description}</p>
                 <p className='text-sm'>{item?.stockQuantity}</p>
                 </div>
-                <button onClick={()=>{addToCart(item)}} className='p-1 rounded border border-black'>Add to Cart</button>
+                <button onClick={()=>{
+                    const isAdded = parsedCart.some((cartItem:any) => cartItem.id === item.id)
+                    if(isAdded) {
+                        navigate('/cart')
+                    } else {
+                        addToCart(item)
+                    }
+                }} className='p-1 rounded border border-black'>
+                    {parsedCart.some((cartItem:any) => cartItem.id === item.id) ? "Go to Cart" : "Add to Cart"}
+                </button>
             </div>
         )
     })}</div>
+    <ToastContainer position="bottom-right"
+ />
     </div>
   )
 }
